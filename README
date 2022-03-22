@@ -1,0 +1,8 @@
+GLOVSENSE
+
+Sports glove project. Everything is built from scratch without using 
+any libraries and IDEs for embedded development. The project should 
+be done with an Unix, make and gnu-arm-embedded-toolchain.
+
+The project is aimed to support accelerometer, gyrescope and blood
+pressure monitoring sensors.

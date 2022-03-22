@@ -1,2 +1,0 @@
-# glovsense
-Sports glove project
