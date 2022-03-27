@@ -54,3 +54,4 @@ dkms.conf
 *.swp
 *.swo
 *.bin
+*.elf

@@ -1,24 +1,22 @@
 TARGET = main
-
 MCU_SPEC = cortex-m4
 
-TOOLCHAIN = /usr/local/gcc-arm-none-eabi-x86_64-linux/gcc-arm-none-eabi-10.3-2021.10/bin
+TOOLCHAIN = /usr/local/gcc-arm-none-eabi-x86_64-linux/gcc-arm-none-eabi-10.3-2021.10
+CC = $(TOOLCHAIN)/bin/arm-none-eabi-gcc
+AS = $(TOOLCHAIN)/bin/arm-none-eabi-as
+LD = $(TOOLCHAIN)/bin/arm-none-eabi-ld
+OC = $(TOOLCHAIN)/bin/arm-none-eabi-objcopy
+OD = $(TOOLCHAIN)/bin/arm-none-eabi-objdump
+OS = $(TOOLCHAIN)/bin/arm-none-eabi-size
 
-CC = $(TOOLCHAIN)/arm-none-eabi-gcc
-AS = $(TOOLCHAIN)/arm-none-eabi-as
-LD = $(TOOLCHAIN)/arm-none-eabi-ld
-OC = $(TOOLCHAIN)/arm-none-eabi-objcopy
-OD = $(TOOLCHAIN)/arm-none-eabi-objdump
-OS = $(TOOLCHAIN)/arm-none-eabi-size
+LD_SCRIPT = stm32f405xx.ld
+LSCRITP = ./boot/$(LD_SCRIPT)
 
-LD_SCRIPT = boot/stm32f405xx.ld
-LSCRITP = ./$(LD_SCRIPT)
-
-ASFLAGS = -c -O0 -mcpu=$(MCU_SPEC) -mthumb -Wall
-CFLAGS = -mcpu=$(MCU_SPEC) -mthumb -Wall -g --specs=nosys.specs
+ASFLAGS = -c -O0 -mcpu=$(MCU_SPEC) -mthumb -Wall -fmessage-length=0
+CFLAGS = -mcpu=$(MCU_SPEC) -mthumb -Wall -g --specs=nosys.specs -fmessage-length=0
 LFLAGS = -mcpu=$(MCU_SPEC) -mthumb -Wall --specs=nosys.specs -nostdlib -lgcc -T$(LSCRIPT)
 
-AS_SRC = ./boot/startup_stm32f405xx.s
+AS_SRC = ./src/startup_stm32f405xx.s
 C_SRC = ./src/main.c
 
 OBJS = $(AS_SRC:.s=.o) $(C_SRC:.c=.o)
@@ -27,17 +25,17 @@ OBJS = $(AS_SRC:.s=.o) $(C_SRC:.c=.o)
 all: $(TARGET).bin
 
 %.o: %.s
-  $(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
+	$(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
 
 %.o: %.c
-  $(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@
 
 $(TARGET).elf: $(OBJS)
-  $(CC) $^ $(LFLAGS) -o $@
+	$(CC) $^ $(LFLAGS) -o $@
 
 $(TARGET).bin: $(TARGET).elf
-  $(OC) -S -O binary $< $@
-  $(OS) $<
+	$(OC) -S -O binary $< $@
+	$(OS) $<
 
 .PHONY: clean
 clean:
