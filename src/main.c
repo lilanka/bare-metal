@@ -1,6 +1,6 @@
+#include "main.h"
+
 int main(void) {
-  int val = 0;
-  while (1) {
-    val += 1;
-  }
+  // Enable GPIOB peripheral in 'RCC_AHB1ENR'
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
 }
