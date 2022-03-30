@@ -22,8 +22,7 @@ CFLAGS += -mcpu=$(MCU_SPEC) -mthumb -Wall -g -fmessage-length=0 --specs=nosys.sp
 # Linker flags
 LFLAGS += -mcpu=$(MCU_SPEC) -mthumb -Wall --specs=nosys.specs -nostdlib -lgcc -T$(LSCRIPT)
 
-INCLUDE  =  -I./
-#INCLUDE  += -I./device_headers
+INCLUDE  += -I./header
 
 OBJS  = $(AS_SRC:.s=.o) $(C_SRC:.c=.o)
 
