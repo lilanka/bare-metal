@@ -1,5 +1,7 @@
 #include "main.h"
 
+void SystemInit(void) {}
+
 int main(void) {
   // enable GPIOB peripheral in 'RCC_AHB1ENR'
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;

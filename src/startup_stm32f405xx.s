@@ -1,6 +1,6 @@
 .syntax unified
 .cpu cortex-m4
-.fpu softvfp
+.fpu fpv4-sp-d16 
 .thumb
 
 .global g_pfnVectors
@@ -13,8 +13,9 @@
 .word _ebss   /* end of the .bss section */
 
 .section .text.reset_handler
-.weak reset_handler
-.type reset_handler, %function
+  .weak reset_handler
+  .type reset_handler, %function
+
 reset_handler:
   ldr sp, =_estack // set stack pointer
 
@@ -49,7 +50,7 @@ LoopFillZerobss:
   bcc FillZerobss
 
   /* Call the clock system initialization function */
-  /*bl SystemInit*/
+  bl SystemInit
   /* Call static constructors */
   /*bl __libc_init_array*/
   /* Call the applications's entry point. */
@@ -66,8 +67,9 @@ default_interrupt_handler:
 /*  I'm not stupid to write all of it by myself. See
     https://github.com/STMicroelectronics/STM32CubeF4/blob/3d6be4bd406f275728e0a321cc371c62a3100533/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f405xx.s#L128 
 */
-.type g_pfnVectors, %object
 .section .vector_table,"a",%progbits
+  .type g_pfnVectors, %object
+  .size g_pfnVectors, .-g_pfnVectors
 g_pfnVectors:
   .word  _estack
   .word  reset_handler

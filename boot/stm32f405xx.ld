@@ -1,13 +1,18 @@
 ENTRY(reset_handler)
 
-_estack = 0x5FFFFFFF; 
+/* minimum amount of memory for stack and dynamic memory */
 _Min_Leftover_RAM = 0x400;
+
 
 MEMORY
 {
-  flash (rx) : ORIGIN = 0x00000000, LENGTH = 1M 
-  sram (rwx) : ORIGIN = 0x20000000, LENGTH = 192K 
+  FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 1M
+  RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 112K
+  RAM2  (rwx) : ORIGIN = 0x2001C000, LENGTH = 16K
+  RAM3  (rwx) : ORIGIN = 0x20020000, LENGTH = 64K
 }
+
+_estack = ORIGIN(RAM) + LENGTH(RAM);
 
 SECTIONS
 {
@@ -16,7 +21,7 @@ SECTIONS
     . = ALIGN(4);
     KEEP (*(.vector_table))
     . = ALIGN(4);
-  } >flash
+  } >FLASH
 
   .text :
   {
@@ -24,7 +29,7 @@ SECTIONS
     *(.text)
     *(.text*)
     . = ALIGN(4);
-  } >flash
+  } >FLASH
 
   .rodata :
   {
@@ -32,7 +37,7 @@ SECTIONS
     *(.rodata)
     *(.rodata*)
     . = ALIGN(4);
-  } >flash
+  } >FLASH
 
   _sidata = .;
   .data : AT(_sidata) 
@@ -43,18 +48,20 @@ SECTIONS
     *(.data*)
     _edata = .;
     . = ALIGN(4);
-  } >sram
+  } >RAM
 
   .bss :
   {
     . = ALIGN(4);
     _sbss = .;
+    __bss_start__ = _sbss;
     *(.bss)
     *(.bss*)
     *(COMMON)
     . = ALIGN(4);
     _ebss = .;
-  } >sram
+    __bss_end__ = _ebss;
+  } >RAM
 
   .dynamic_allocations :
   {
@@ -63,5 +70,5 @@ SECTIONS
     . = . + _Min_Leftover_RAM;
     . = ALIGN(4);
     _esystem_ram = .;
-  } >sram
+  } >RAM
 }
